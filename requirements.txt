@@ -2,3 +2,5 @@ django
 djangorestframework
 chatterbot>=0.2.2
 gTTS
+spacy
+scipy
