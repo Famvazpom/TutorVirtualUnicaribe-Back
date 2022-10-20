@@ -14,9 +14,12 @@ trainer = ListTrainer(chatterbot)
 
 trainer.train([
     "Necesito ayuda en matematicas",
-    "Que temas necesitas? puedo ayudarte en....",
+    "Que temas necesitas?, puedo ayudarte en....",
     "Algebra",
-    "Perfecto"]
+    "Tengo los siguientes temas: Factorizacion, Minimo comun multiplo, etc.",
+    'Factorizacion',
+    '83'
+]
 )
 
 
