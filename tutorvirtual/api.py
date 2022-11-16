@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
+import re
 from django.http import HttpResponse
 from .math2speech import math2speech
 from .PMRead import PM
@@ -37,7 +38,14 @@ class ChatterBotView(views.APIView):
         try:
             response_data = pm.get_nota(int(response_data['text']))
             response_data['audio_url'] = 'media/voice.mp3'
-            obj.generaAudio(response_data['nota']['contenido'],filename='./media/voice.mp3')
+            result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', response_data["nota"]['contenido'])
+
+            for id,text in enumerate(result):
+                if id > 0 and id%2==1:
+                    math = math2speech()
+                    c = math.procesaCadena(text,[char for char in text if char.isalpha()])
+                    result[id] = math.obtenCadena(0,c['arbol'])
+            obj.generaAudio(''.join(result),filename='./media/voice.mp3')
         except ValueError:      
             obj.generaAudio(response_data['text'],filename='./media/voice.mp3')
             response_data['audio_url'] = 'media/voice.mp3'

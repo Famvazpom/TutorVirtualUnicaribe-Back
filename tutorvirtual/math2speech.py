@@ -45,11 +45,11 @@ class math2speech:
     def procesaCadena(self,ltx,symbs):
         if not ltx or not symbs:
             return
-        data = cadenas.valida_ltx(ltx, symbs, funciones)
+        data = valida_ltx(ltx, symbs, funciones)
         cadena = data['cad']
-        cadena_ajustada = cadenas.ajusta_cadena(cadena,symbs) #procesa la cadena
-        arbol = cadenas.cad2tree(cadena_ajustada)
-        expresion = cadenas.tree2expr(arbol,0,symbs)
+        cadena_ajustada = ajusta_cadena(cadena,symbs) #procesa la cadena
+        arbol = cad2tree(cadena_ajustada)
+        expresion = tree2expr(arbol,0,symbs)
         return { 'arbol':arbol,'expresion':expresion}
     
    
@@ -58,10 +58,17 @@ class math2speech:
             return  ''
         if valor in self.simbolos.keys():
             return self.simbolos[valor]
-        if '^' in valor:
+        if '^' in valor and not '^(':
+            valor_n = valor.replace('^','')
+            valor_n = valor_n.replace('','')
+            return f'{self.exponentes[int(valor_n)]}'
+        if '^(' in valor:
             valor_n = valor.replace('^(','')
             valor_n = valor_n.replace(')','')
             return f'{self.exponentes[int(valor_n)]}'
+        if ')=' in valor:
+            valor = valor.replace(')','')
+            return valor
         else:
             return valor
                 
@@ -110,3 +117,4 @@ class math2speech:
         datos = self.procesaCadena(ltx,variables)
         cadena = self.obtenCadena(0,datos['arbol'])
         self.generaAudio(cadena,filename)
+    
