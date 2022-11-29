@@ -3,8 +3,8 @@ djangorestframework
 spacy==2.3.5
 chatterbot>=0.2.2
 gTTS
-spacy
 scipy
 sympy
 markdown
 ipywidgets
+django-cors-headers

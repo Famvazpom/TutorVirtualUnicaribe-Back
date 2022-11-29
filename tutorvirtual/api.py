@@ -35,9 +35,10 @@ class ChatterBotView(views.APIView):
 
         response_data = chatterbot.get_response(input_statement)
         response_data = response_data.serialize()
+        voicename = f'./media/{ get_random_string() }.mp3'
         try:
             response_data = pm.get_nota(int(response_data['text']))
-            response_data['audio_url'] = 'media/voice.mp3'
+            response_data['audio_url'] = voicename
             result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', response_data["nota"]['contenido'])
 
             for id,text in enumerate(result):
@@ -45,10 +46,10 @@ class ChatterBotView(views.APIView):
                     math = math2speech()
                     c = math.procesaCadena(text,[char for char in text if char.isalpha()])
                     result[id] = math.obtenCadena(0,c['arbol'])
-            obj.generaAudio(''.join(result),filename='./media/voice.mp3')
+            obj.generaAudio(''.join(result),filename=voicename)
         except ValueError:      
-            obj.generaAudio(response_data['text'],filename='./media/voice.mp3')
-            response_data['audio_url'] = 'media/voice.mp3'
+            obj.generaAudio(response_data['text'],filename=voicename)
+            response_data['audio_url'] = voicename
         response = Response(response_data, status=status.HTTP_200_OK)
         return response
 

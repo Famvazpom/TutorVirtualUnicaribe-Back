@@ -1,5 +1,6 @@
 from .Cadenas import *
 from gtts import gTTS
+from django.utils.crypto import get_random_string
 
 class math2speech:
     exponentes = None
