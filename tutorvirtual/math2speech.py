@@ -15,10 +15,10 @@ class math2speech:
             4: 'A LA CUARTA POTENCIA',
             5: 'A LA QUINTA POTENCIA',
             6: 'A LA SEXTA POTENCIA',
-            7: 'A LA SEPTIMA POTENCIA',
+            7: 'A LA SÉPTIMA POTENCIA',
             8: 'A LA OCTAVA POTENCIA',
             9: 'A LA NOVENA POTENCIA',
-            10: 'A LA DECIMA POTENCIA',
+            10: 'A LA DÉCIMA POTENCIA',
         } if not exponentes else exponentes
         
         self.simbolos = {
