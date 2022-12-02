@@ -60,7 +60,6 @@ INSTALLED_APPS = (
     'corsheaders',
     'tutorvirtual',
     'rest_framework',
-    'django_cleanup.apps.CleanupConfig',
 )
 
 REST_FRAMEWORK = {
