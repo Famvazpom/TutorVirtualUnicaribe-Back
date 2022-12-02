@@ -38,19 +38,26 @@ class ChatterBotView(views.APIView):
         response_data = response_data.serialize()
         voicename = f'./media/{ get_random_string() }.mp3'
         try:
-            result = pm.get_nota(int(response_data['text']))['nota']
-            response_data['text'] = result['contenido']
-            response_data['autor'] = result['autor']['nombre']
-            response_data['titulo'] = result['titulo']
+            resulta = pm.get_nota(int(response_data['text']))['nota']
+            response_data['text'] = resulta['contenido']
+            response_data['autor'] = resulta['autor']['nombre']
+            response_data['titulo'] = resulta['titulo']
             response_data['audio_url'] = voicename
-            result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', result["contenido"])
+            result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', resulta['contenido'])
+            final = []
 
-            for id,text in enumerate(result):
+            for i in result:
+                final += re.split('\$(.*)\$',i)
+                
+                
+            for id,text in enumerate(final):
                 if id > 0 and id%2==1:
                     math = math2speech()
                     c = math.procesaCadena(text,[char for char in text if char.isalpha()])
-                    result[id] = math.obtenCadena(0,c['arbol'])
-            obj.generaAudio(''.join(result),filename=voicename)
+                    final[id] = math.obtenCadena(0,c['arbol'])
+
+            print(final)
+            obj.generaAudio(''.join(final),filename=voicename)
         except ValueError:      
             obj.generaAudio(response_data['text'],filename=voicename)
             response_data['audio_url'] = voicename

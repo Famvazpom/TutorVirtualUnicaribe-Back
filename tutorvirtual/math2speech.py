@@ -18,6 +18,7 @@ class math2speech:
             7: 'A LA SEPTIMA POTENCIA',
             8: 'A LA OCTAVA POTENCIA',
             9: 'A LA NOVENA POTENCIA',
+            10: 'A LA DECIMA POTENCIA',
         } if not exponentes else exponentes
         
         self.simbolos = {
@@ -62,11 +63,11 @@ class math2speech:
         if '^' in valor and not '^(':
             valor_n = valor.replace('^','')
             valor_n = valor_n.replace('','')
-            return f'{self.exponentes[int(valor_n)]}'
+            return self.exponentes.get(int(valor_n),f'A LA POTENCIA {valor_n}')
         if '^(' in valor:
             valor_n = valor.replace('^(','')
             valor_n = valor_n.replace(')','')
-            return f'{self.exponentes[int(valor_n)]}'
+            return self.exponentes.get(int(valor_n),f'A LA POTENCIA {valor_n}')
         if ')=' in valor:
             valor = valor.replace(')','')
             return valor
