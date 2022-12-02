@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from .math2speech import math2speech
 from .PMRead import PM
 from tutorvirtual.secret_key import MAIL,PWD
-
+from django.utils.crypto import get_random_string
 
 pm = PM(MAIL,PWD)
 pm.conecta()
