@@ -75,14 +75,8 @@
         $submit.done(function(statement) {
             var $row = $rowTemplate.clone();
             console.log(statement);
-            if(statement.hasOwnProperty('nota'))
-            {
-              $row.text(statement.nota.contenido);
-            }
-            else
-            {
-              $row.text(statement.text);
-            }
+            
+            $row.text(statement.text);
             $chatlog.append($row);
             $input.val('');
         });

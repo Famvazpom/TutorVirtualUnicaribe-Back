@@ -38,9 +38,12 @@ class ChatterBotView(views.APIView):
         response_data = response_data.serialize()
         voicename = f'./media/{ get_random_string() }.mp3'
         try:
-            response_data = pm.get_nota(int(response_data['text']))
+            result = pm.get_nota(int(response_data['text']))['nota']
+            response_data['text'] = result['contenido']
+            response_data['autor'] = result['autor']['nombre']
+            response_data['titulo'] = result['titulo']
             response_data['audio_url'] = voicename
-            result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', response_data["nota"]['contenido'])
+            result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', result["contenido"])
 
             for id,text in enumerate(result):
                 if id > 0 and id%2==1:
