@@ -56,7 +56,6 @@ class ChatterBotView(views.APIView):
                     c = math.procesaCadena(text,[char for char in text if char.isalpha()])
                     final[id] = math.obtenCadena(0,c['arbol'])
 
-            print(final)
             obj.generaAudio(''.join(final),filename=voicename)
         except ValueError:      
             obj.generaAudio(response_data['text'],filename=voicename)
