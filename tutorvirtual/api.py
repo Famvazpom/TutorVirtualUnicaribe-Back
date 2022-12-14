@@ -7,9 +7,17 @@ import re
 from django.http import HttpResponse
 from .math2speech import math2speech
 from .PMRead import PM
+from tutorvirtual.models import Contenido
 from tutorvirtual.secret_key import MAIL,PWD
 from django.utils.crypto import get_random_string
+import pickle
 
+with open('./tfidf.pkl','rb') as f: 
+    chat = pickle.load(f)
+
+
+with open('./normalizador.pkl','rb') as f: 
+    normalizador = pickle.load(f)
 
 pm = PM(MAIL,PWD)
 pm.conecta()
@@ -30,9 +38,42 @@ class ChatterBotView(views.APIView):
         }
         return Response(data, status=status.HTTP_200_OK)
 
+    def get_response(self,input_statement):
+        palabras = normalizador.normaliza_texto(input_statement).split(' ')
+        existentes = [palabra for palabra in palabras if palabra in chat.columns]
+        existentes = chat.loc[:,existentes]
+        existentes.loc[:,'Total_sum']= existentes.sum(axis=1)
+        existentes.loc[:,'Total_mean']= existentes.mean(axis=1)
+        existentes=existentes.query('Total_mean == Total_mean.max()')
+        return Contenido.objects.get(pk=existentes.index[0]+1)
+
     def post(self, request, *args, **kwargs):
-        obj = math2speech()
+        m2s = math2speech()
+        response_data = {}
         input_statement = request.data.get('text')
+        voicename = f'./media/{ get_random_string() }.mp3'
+        obj = self.get_response(input_statement)
+        response_data['text'] = obj.contenido
+        response_data['autor'] = obj.autor
+        response_data['titulo'] = obj.titulo
+        response_data['audio_url'] = voicename
+        result = re.split('\\\\begin{equation}\\n(.*)\\n\\\\end{equation}', obj.contenido)
+        final = []
+
+        for i in result:
+            final += re.split('\$(.*)\$',i)
+            
+            
+        for id,text in enumerate(final):
+            if id > 0 and id%2==1:
+                math = math2speech()
+                c = math.procesaCadena(text,[char for char in text if char.isalpha()])
+                final[id] = math.obtenCadena(0,c['arbol'])
+
+        m2s.generaAudio(''.join(final),filename=voicename)
+
+        response = Response(response_data, status=status.HTTP_200_OK)
+        return response
 
         response_data = chatterbot.get_response(input_statement)
         response_data = response_data.serialize()
